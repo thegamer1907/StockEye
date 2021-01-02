@@ -1,0 +1,55 @@
+/* html, body {
+  width:  100%;
+  height: 100%;
+  margin: 10px;  
+} */
+
+button{
+  align-self: center;
+  margin: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+/* #drop_zone {
+  border: 5px solid blue;
+  width:  100%;
+  height: 100%;
+}
+
+/* table, th, td {
+  border: 1px solid black;
+} */
+
+/* #drop_zone_label {
+  margin: 1em;
+  display: block;
+}
+
+textarea,button,p{
+  margin: 1em;
+} */ 

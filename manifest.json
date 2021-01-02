@@ -1,0 +1,16 @@
+{
+    "name": "Stock Eye",
+    "version": "1.0",
+    "description": "Watch All your stocks",
+    "manifest_version": 2,
+    "content_security_policy": "script-src 'self' https://ajax.googleapis.com; object-src 'self'",
+    "browser_action": {
+        "default_popup": "sidebar/sidebar.html"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+      },
+    "permissions" : ["storage","alarms","background","notifications"],
+    "options_page": "options.html"
+  }
