@@ -9,15 +9,14 @@ function updateTable(stockName,index){
 }
 
 function loadTable(stockName, data) {
-    // chrome.extension.getBackgroundPage().console.log(data);    
     var row = '<tr>'
-    row+= `<td>${stockName}</td>`
+    row+= `<td>${data.display}</td>`
     row+= `<td>${data.date}</td>`
     row+= `<td>${data.purchase_price}</td>`
     row+= `<td>${data.price}</td>`
     row+= `<td>${data.target}</td>`
-    row += '<tr>'
-    $('#stocks tr:last').after(row);
+    row += '</tr>'
+    $('#stocks').append(row);
 }
 
 $(document).ready(function(e) { 

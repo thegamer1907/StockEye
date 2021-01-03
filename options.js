@@ -1,4 +1,40 @@
 
+function updateTable(stockName,index){
+    // console.log(index)
+    // console.log(stockName)
+    chrome.storage.sync.get([stockName], function(result){
+        loadTable(stockName,result[stockName])
+    });
+}
+
+function loadTable(stockName, data) {
+   
+    var row = '<tr>'
+    row+= `<td hidden>${stockName}</td>`
+    row+= `<td>${data.display}</td>`
+    row+= `<td>${data.date}</td>`
+    row+= `<td>${data.purchase_price}</td>`
+    row+= `<td>${data.price}</td>`
+    row+= `<td>${data.target}</td>`
+    row+= `<td align='center'><input class="delete" type=button value="Delete" style="width:100%"></td>`
+    row += '</tr>'
+    $('#stocks').append(row);
+    $(".delete").on('click', function(event){
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        var par = $(this).parent().parent();
+        // console.log(par)
+        par.remove()
+    });
+}
+
+$(document).ready(function(e) { 
+    chrome.storage.sync.get(['stocks'], function(result) {
+        result.stocks.forEach(updateTable)
+        $('#stocks').show()
+    });
+});
+
 
 document.getElementById("check").addEventListener("click", function(){
     const key = "CJ7SNCCZRHAV5QGB"
@@ -19,10 +55,25 @@ document.getElementById("check").addEventListener("click", function(){
    }
 })
 
+
+function dateToYMD(date) {
+    var strArray=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var d = date.getDate();
+    var m = strArray[date.getMonth()];
+    var y = date.getFullYear();
+    return '' + (d <= 9 ? '0' + d : d) + '-' + m + '-' + y;
+}
+
 document.getElementById("add").addEventListener("click", function(){
     var stockName = $('#fname').val();
     if(stockName.length == 0){
         alert("Enter Stock Name")
+        return
+    }
+
+    var displayName = $('#dname').val();
+    if(displayName.length == 0){
+        alert("Enter Stock Display Name")
         return
     }
     var currentPrice = $('#current_price').text()
@@ -30,11 +81,14 @@ document.getElementById("add").addEventListener("click", function(){
         alert("Check Price Once")
         return
     }
-    var date = $("#date").val()
-    if(date.length == 0){
+    var inp = $("#date").val()
+    if(inp.length == 0){
         alert("Enter Date")
         return
     }
+    var d = Date.parse(inp)
+    var date = dateToYMD(new Date(d))
+    
     var price = $('#price').val()
     if(price.length == 0){
         alert("Enter Purchase Price")
@@ -48,18 +102,27 @@ document.getElementById("add").addEventListener("click", function(){
     }
     
     var row = '<tr>'
-    row+= `<td>${stockName}</td>`
+    row+= `<td hidden>${stockName}</td>`
+    row+= `<td>${displayName}</td>`
     row+= `<td>${date}</td>`
     row+= `<td>${price}</td>`
     row+= `<td>${currentPrice}</td>`
     row+= `<td>${target}</td>`
-    row+= `<td align='center'><input id="delete" type=button value="Delete" style="width:100%"></td>`
-    row += '<tr>'
-    $('#stocks tr:last').after(row);
+    row+= `<td align='center'><input class="delete" type=button value="Delete" style="width:100%"></td>`
+    row += '</tr>'
+    $('#stocks').prepend(row);
     $('#stocks').show()
     $('#form').trigger("reset");
     $('#current').text("")
+    $(".delete").on('click', function(event){
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        var par = $(this).parent().parent();
+        // console.log(par)
+        par.remove()
+    });
 })
+
 
 document.getElementById("addall").addEventListener("click", function(){
     var table = document.getElementById('stocks');
@@ -68,27 +131,25 @@ document.getElementById("addall").addEventListener("click", function(){
 
     var finalStockArray = []
 
-    for(var i=2; i<rowLength-1; i+=1){
-    var row = table.rows[i];
-        var stockName = row.cells[0].innerHTML;
-        var finalObj = { 
-            [stockName] : { 
-                    "date" : row.cells[1].innerHTML, 
-                    "purchase_price" : row.cells[2].innerHTML, 
-                    "price" : row.cells[3].innerHTML,
-                    "target" : row.cells[4].innerHTML
-                }
+    for(var i=1; i<rowLength; i+=1){
+        var row = table.rows[i];
+        if(row.cells.length > 0){
+            var stockName = row.cells[0].innerHTML;
+            var finalObj = { 
+                [stockName] : { 
+                        "display" : row.cells[1].innerHTML, 
+                        "date" : row.cells[2].innerHTML, 
+                        "purchase_price" : row.cells[3].innerHTML, 
+                        "price" : row.cells[4].innerHTML,
+                        "target" : row.cells[5].innerHTML
+                    }
+            }
+            finalStockArray.push(stockName);
+            chrome.storage.sync.set(finalObj);
         }
-        finalStockArray.push(stockName);
-        chrome.storage.sync.set(finalObj);
     }
 
-    chrome.storage.sync.get(['stocks'], function(result) {
-        var updatedArray = result.stocks.concat(finalStockArray.filter((item) => result.stocks.indexOf(item) < 0))
-        console.log(updatedArray)
-        chrome.storage.sync.set({stocks : updatedArray}, function(){
-            location.reload()
-        });
+    chrome.storage.sync.set({stocks : finalStockArray}, function(){
+        location.reload()
     });
-
 })

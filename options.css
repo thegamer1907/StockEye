@@ -12,6 +12,10 @@ table {
   width: 100%;
 }
 
+th {
+  white-space: nowrap;
+}
+
 table td, table th {
   border: 1px solid #ddd;
   padding: 8px;

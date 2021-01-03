@@ -27,12 +27,14 @@ function doGetCall(stockName,index){
                 var price = data["4. close"]
                 updatedStock["price"] = price
                 console.log("firing notification")
-                chrome.notifications.create(stockName, {
-                    title: 'Stock Price Update',
-                    message: `${stockName} crossed the target price Rs.${updatedStock.target}. Current Price : Rs.${price}`,
-                    type: 'basic',
-                    iconUrl : 'icon.png'
-                });
+                if(parseFloat(price) >= parseFloat(updatedStock.target)){
+                    chrome.notifications.create(stockName, {
+                        title: 'Stock Price Update',
+                        message: `${updatedStock.display} crossed the target price Rs.${updatedStock.target}. Current Price : Rs.${price}`,
+                        type: 'basic',
+                        iconUrl : 'icon.png'
+                    });
+                }
                 chrome.storage.sync.set({ [stockName] : updatedStock});
             });
         }
