@@ -7,27 +7,34 @@ chrome.runtime.onInstalled.addListener(function() {
             storageChange.newValue.forEach(doGetCall)
           }        
       });
-     chrome.alarms.create('fetch_stocks', { periodInMinutes: 1 });  
+     chrome.alarms.create('fetch_stocks', { periodInMinutes: 1 });
 });
 
-const key = "CJ7SNCCZRHAV5QGB"
 
-function doGetCall(stockName,index){
-    var url=`https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${stockName}&apikey=${key}`;
+
+function doGetCall(stockName){
     var xhttp = new XMLHttpRequest();
-    xhttp.open("GET",url);
+    xhttp.open("GET",stockName);
     xhttp.send();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-            var resp = JSON.parse(xhttp.responseText)
-            var latest_date = resp["Meta Data"]["3. Last Refreshed"];
-            var data = resp["Time Series (Daily)"][latest_date]
+            var el = $( '<div></div>' );
+            el.html(xhttp.responseText)
+            var divs = $(el).find('.D\\(ib\\).Mend\\(20px\\)')
+            var price = 0
+            for(var i=0;i< divs["length"]; i++){
+                if($(divs[i]).attr('class') == "D(ib) Mend(20px)"){
+                    var span = $(divs[i]).find('span')[0]
+                    price = $(span).text()
+                    break;
+                }
+            }
             chrome.storage.sync.get([stockName], function(result) {
                 var updatedStock = result[stockName]
-                var price = data["4. close"]
                 updatedStock["price"] = price
-                console.log("firing notification")
-                if(parseFloat(price) >= parseFloat(updatedStock.target)){
+                var d = new Date()
+                chrome.storage.sync.set({["last_updated"] : `${d.toDateString()} ${d.toLocaleTimeString()}`});
+                if(parseFloat(price.replace(',', '')) >= parseFloat(updatedStock.target)){
                     chrome.notifications.create(stockName, {
                         title: 'Stock Price Update',
                         message: `${updatedStock.display} crossed the target price Rs.${updatedStock.target}. Current Price : Rs.${price}`,

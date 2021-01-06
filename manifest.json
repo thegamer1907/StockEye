@@ -11,9 +11,9 @@
         "16" : "icon.png"
     },
     "background": {
-        "scripts": ["background.js"],
+        "scripts": ["jquery.js","background.js"],
         "persistent": false
       },
-    "permissions" : ["storage","alarms","background","notifications"],
+    "permissions" : ["storage","alarms","background","notifications","downloads","https://*/"],
     "options_page": "options.html"
   }

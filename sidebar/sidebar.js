@@ -23,6 +23,10 @@ $(document).ready(function(e) {
     chrome.storage.sync.get(['stocks'], function(result) {
         result.stocks.forEach(updateTable)
     });
+
+    chrome.storage.sync.get(["last_updated"], function(result){
+        document.getElementById("updated").innerText = "Last Updated : " + result["last_updated"]
+    })
 });
 
 
