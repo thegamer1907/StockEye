@@ -28,10 +28,10 @@ function loadTable(stockName, data) {
 }
 
 $(document).ready(function(e) { 
-    chrome.storage.sync.get(['stocks'], function(result) {
-        result.stocks.forEach(updateTable)
-        $('#stocks').show()
-    });
+    // chrome.storage.sync.get(['stocks'], function(result) {
+    //     result.stocks.forEach(updateTable)
+    //     $('#stocks').show()
+    // });
     const inputElement = document.getElementById("input");
     inputElement.addEventListener("change", handlePicked, false);
 });

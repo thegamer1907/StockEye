@@ -35,7 +35,7 @@ function doGetCall(stockName){
                 var d = new Date()
                 chrome.storage.sync.set({["last_updated"] : `${d.toDateString()} ${d.toLocaleTimeString()}`});
                 if(parseFloat(price.replace(',', '')) >= parseFloat(updatedStock.target)){
-                    chrome.notifications.create(stockName, {
+                    chrome.notifications.create(`${stockName}_${updatedStock.target}`, {
                         title: 'Stock Price Update',
                         message: `${updatedStock.display} crossed the target price Rs.${updatedStock.target}. Current Price : Rs.${price}`,
                         type: 'basic',
