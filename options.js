@@ -67,12 +67,14 @@ function read(myfile){
     var reader = new FileReader();
     reader.onload = async function (e) {
         var lines = e.target.result.split("\n");
+        var taken = 0
         for(var i = 1;i < lines.length;i++){
             var fields = lines[i].split(",")
+            console.log(fields)
             if(fields.length != 5){
-                alert("Invalid Format of Excel!")
-                break;
+                continue;
             }
+            taken+=1
             var row = '<tr>'
             row+= `<td hidden>${fields[4]}</td>`
             row+= `<td>${fields[0]}</td>`
@@ -91,6 +93,7 @@ function read(myfile){
                 par.remove()
             });
         }
+        alert(`${taken} rows loaded`)
     }
 
     reader.readAsText(myfile);
